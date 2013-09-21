@@ -44,8 +44,9 @@ apt-get -y install php5-fpm php-pear php5-dev php5-mysql php-apc php5-mcrypt php
 apt-get -yt squeeze-backports install varnish
 listen=$(cat /etc/php5/fpm/pool.d/www.conf|grep 127.0.0.1:9000)
 sed -i "s/$listen/listen = \/var\/run\/php5-fpm.sock/g" /etc/php5/fpm/pool.d/www.conf
-wget http://soft.yzs.me/nginx.sh -O ~/nginx.sh
-sh ~/nginx.sh
+#wget http://soft.yzs.me/nginx.sh -O ~/nginx.sh
+#sh ~/nginx.sh
+sh nginx.sh
 mkdir /etc/nginx/fastcgi_cache -p
 mkdir /etc/nginx/rewrite -p
 mkdir /var/www -p

@@ -48,8 +48,9 @@ yum -y install php-fpm php-mbstring php-pear php-devel php-mysql php-pecl-apc ph
 listen=$(cat /etc/php-fpm.d/www.conf|grep 127.0.0.1:9000)
 sed -i "s/$listen/listen = \/var\/run\/php5-fpm.sock/g" /etc/php-fpm.d/www.conf
 useradd -s /bin/sh -d /var/www www-data
-wget http://soft.yzs.me/nginx-ctos.sh -O ~/nginx-ctos.sh
-sh ~/nginx-ctos.sh
+#wget http://soft.yzs.me/nginx-ctos.sh -O ~/nginx-ctos.sh
+#sh ~/nginx-ctos.sh
+sh nginx-ctos.sh
 mkdir /etc/nginx/fastcgi_cache -p
 mkdir /etc/nginx/rewrite -p
 mkdir /var/www -p
@@ -70,12 +71,14 @@ ln -sf /usr/local/lib/libmcrypt.so.4 /lib64/libmcrypt.so.4
 ln -sf /usr/local/lib/libmcrypt.so.4.4.8 /lib/libmcrypt.so.4
 bit=$(getconf LONG_BIT)
 if [ "$bit" == '64' ]; then
-wget http://soft.yzs.me/php-mcrypt-5.3.3-1.el6.x86_64.rpm -O ~/php-mcrypt-5.3.3-1.el6.x86_64.rpm
-rpm -ivh ~/php-mcrypt-5.3.3-1.el6.x86_64.rpm --nodeps
+#wget http://soft.yzs.me/php-mcrypt-5.3.3-1.el6.x86_64.rpm -O ~/php-mcrypt-5.3.3-1.el6.x86_64.rpm
+#rpm -ivh ~/php-mcrypt-5.3.3-1.el6.x86_64.rpm --nodeps
+rpm -ivh php-mcrypt-5.3.3-1.el6.x86_64.rpm --nodeps
 fi
 if [ "$bit" == '32' ]; then
-wget http://soft.yzs.me/php-mcrypt-5.3.3-1.el6.i686.rpm -O ~/php-mcrypt-5.3.3-1.el6.i686.rpm
-rpm -ivh ~/php-mcrypt-5.3.3-1.el6.i686.rpm --nodeps
+#wget http://soft.yzs.me/php-mcrypt-5.3.3-1.el6.i686.rpm -O ~/php-mcrypt-5.3.3-1.el6.i686.rpm
+#rpm -ivh ~/php-mcrypt-5.3.3-1.el6.i686.rpm --nodeps
+rpm -ivh php-mcrypt-5.3.3-1.el6.i686.rpm --nodeps
 fi
 cd /var/www
 wget http://www.yahei.net/tz/tz.zip
