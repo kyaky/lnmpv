@@ -65,7 +65,7 @@ else
         echo "\033[46;30mLNMPV successfully installed and successfully started.\033[0m"
 	echo "You can visit http:///yourserverip:8910/tz.php"
 	echo "phpMyAdmin:http://yourserverip:8910/phpmyadmin/"
-	echo "Made by Extreme"
-	echo "My Blog:http://yzs.me/"
+	echo "Author: Extreme (yzs.me)"
+	echo "Optimized by kyaky (me@sth.me)"
 	echo "For more information please visit http://www.mke2fs.com"
 fi
