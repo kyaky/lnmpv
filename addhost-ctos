@@ -1,0 +1,194 @@
+#!/bin/bash
+
+# Check if user is root
+if [ $(id -u) != "0" ]; then
+    echo "Error: You must be root to run this script, use sudo sh $0"
+    exit 1
+fi
+
+clear
+echo "========================================================================="
+echo "Add Virtual Host for LNMPV"
+echo "========================================================================="
+echo "Made by Extreme"
+echo "My Blog:http://yzs.me/"
+echo "For more information please visit http://www.mke2fs.com"
+echo ""
+echo "========================================================================="
+
+if [ "$1" != "--help" ]; then
+
+	domain="yzs.me"
+	read -p "Please input domain,example(yzs.me):" domain
+	if [ "$domain" = "" ]; then
+		echo "Domain Name Error"
+		exit 1
+	fi
+	if [ ! -f "/etc/nginx/sites-available/$domain.conf" ]; then
+	echo "==========================="
+	echo "domain=$domain"
+	echo "===========================" 
+	else
+	echo "==========================="
+	echo "$domain is exist!"
+	echo "==========================="	
+	fi
+	
+
+	echo "Do you want to add more domain name? (y/n)"
+	read add_more_domainame
+
+	if [ "$add_more_domainame" == 'y' ]; then
+
+	  echo "Type domainname,example(www.yzs.me soft.yzs.me bbs.yzs.me):"
+	  read moredomain
+          echo "==========================="
+          echo domain list="$moredomain"
+          echo "==========================="
+	  moredomainame=" $moredomain"
+	fi
+
+        echo "Do you want to use a different user for this website? (y/n)"
+        read user_different_user
+
+        if [ "$user_different_user" == 'y' ]; then
+
+          echo "Type username,example:mywebsite"
+          read differentuser
+          echo "==========================="
+          echo your website user is "$differentuser"
+          echo "==========================="
+          theuser=" $differentuser"
+        fi
+
+	vhostdir="/var/www/$domain"
+	echo "Please input the directory for the domain:$domain :"
+	read -p "(Default directory: /var/www/$domain):" vhostdir
+	if [ "$vhostdir" = "" ]; then
+		vhostdir="/var/www/$domain"
+	fi
+	echo "==========================="
+	echo Virtual Host Directory="$vhostdir"
+	echo "==========================="
+
+#set Server Administrator Email Address
+
+	get_char()
+	{
+	SAVEDSTTY=`stty -g`
+	stty -echo
+	stty cbreak
+	dd if=/dev/tty bs=1 count=1 2> /dev/null
+	stty -raw
+	stty echo
+	stty $SAVEDSTTY
+	}
+	echo ""
+	echo "Press any key to create your virtul host..."
+	char=`get_char`
+
+
+echo "Create Virtul Host directory......"
+mkdir -p $vhostdir
+echo "set permissions of Virtual Host directory......"
+chmod -R 701 $vhostdir
+chown -R php-fpm:php-fpm $vhostdir
+
+
+cat >/etc/nginx/sites-available/$domain.conf<<eof
+server {
+        listen   127.0.0.1:888; ## listen for ipv4; this line is default and implied
+        #listen   [::]:80 default ipv6only=on; ## listen for ipv6
+
+        root $vhostdir;
+        index index.html index.htm index.php;
+
+        set_real_ip_from   127.0.0.1;
+        real_ip_header     X-Forwarded-For;
+
+        # Make site accessible from http://$domain/
+        server_name $domain$moredomainame;
+        access_log             /var/log/nginx/$domain.log              main;
+        location / {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to index.html
+                try_files \$uri \$uri/ /index.html;
+                # Uncomment to enable naxsi on this location
+                #include /etc/nginx/naxsi.rules;
+                include /etc/nginx/rewrite/$domain.conf;
+        }
+
+        # Only for nginx-naxsi : process denied requests
+        #location /RequestDenied {
+                # For example, return an error code
+                #return 418;
+        #}
+
+        #error_page 404 /404.html;
+
+        # redirect server error pages to the static page /50x.html
+        #
+        #error_page 500 502 503 504 /50x.html;
+        #location = /50x.html {
+        #       root /usr/share/nginx/www;
+        #}
+
+        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+        #
+        location ~ \.php$ {
+                fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        #       # NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
+        #
+        #       # With php5-cgi alone:
+        #       fastcgi_pass 127.0.0.1:9000;
+        #       # With php5-fpm:
+                fastcgi_pass unix:/var/run/php5-fpm.sock;
+                fastcgi_index index.php;
+                include fastcgi_params;
+                include fastcgi_cache/$domain.conf;
+        }
+
+        # deny access to .htaccess files, if Apache's document root
+        # concurs with nginx's one
+        #
+        location ~ /\.ht {
+                deny all;
+        }
+}
+eof
+
+cat >/etc/nginx/fastcgi_cache/$domain.conf<<eof
+                fastcgi_cache fcgi;
+                fastcgi_cache_valid 200 302 301 20s;
+                fastcgi_cache_valid any 1m;
+                fastcgi_cache_min_uses 1;
+                fastcgi_cache_use_stale error timeout invalid_header http_500;
+                fastcgi_cache_key \$request_method://\$host\$request_uri;
+eof
+touch /var/log/nginx/$domain.log
+touch /etc/nginx/rewrite/$domain.conf
+if [ "$user_different_user" == 'y' ]; then
+useradd -rm -s /sbin/nologin -d $vhostdir -G php-fpm $theuser
+chown -R $theuser $vhostdir
+chgrp -R php-fpm $vhostdir
+chmod 701 $vhostdir
+cp /etc/php-fpm.d/www.conf /etc/php-fpm.d/$domain.conf
+sed -i "s/user = php-fpm/user = $theuser/g" /etc/php-fpm.d/$domain.conf
+sed -i "s/\/var\/run\/php5-fpm.sock/\/var\/run\/$domain.sock/g" /etc/php-fpm.d/$domain.conf
+sed -i "s/\[www\]/\[$domain\]/g" /etc/php-fpm.d/$domain.conf
+sed -i "s/\/var\/run\/php5-fpm.sock/\/var\/run\/$domain.sock/g" /etc/nginx/sites-available/$domain.conf
+fi
+echo "Restart Nginx......"
+/etc/init.d/nginx restart
+echo "Restart PHP-FPM...."
+/etc/init.d/php*-fpm restart
+echo "========================================================================="
+echo "Add Virtual Host for LNMPV"
+echo "You can add rewrite rules in /etc/nginx/rewrite/$domain.conf."
+echo "========================================================================="
+echo "Made by Extreme"
+echo "My Blog:http://yzs.me/"
+echo "For more information please visit http://www.mke2fs.com"
+echo ""
+echo "========================================================================="
+fi

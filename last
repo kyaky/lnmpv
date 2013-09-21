@@ -1,0 +1,71 @@
+#!/bin/bash
+#Some useful
+sed -i "/client_max_body_size/i\
+\ \ \ \ port_in_redirect off;" /etc/nginx/nginx.conf
+#Begin Check
+echo "=========================================================="
+echo "Check the installation files."
+echo "=========================================================="
+echo "Check PHP-FPM files"
+test -d /etc/php5/fpm && echo  "\033[5m\033[32mPHP-FPM successfully installed.\033[0m"||echo  "\033[5m\033[31mPHP-FPM installation failed.\033[0m"
+echo "Check MySQL files"
+test -d /etc/mysql && echo  "\033[5m\033[32mMySQL successfully installed.\033[0m"||echo  "\033[5m\033[31mMySQL installation failed.\033[0m"     
+echo "Check Nginx flise"
+test -d /etc/nginx && echo  "\033[5m\033[32mNginx successfully installed.\033[0m"||echo  "\033[5m\033[31mNginx installation failed.\033[0m"
+echo "Check Varnish flies"
+test -d /etc/varnish && echo  "\033[5m\033[32mVarnish successfully installed.\033[0m"||echo  "\033[5m\033[31mVarnish installation failed.\033[0m"
+echo "Check Memcached files"
+test -f /etc/memcached.conf && echo  "\033[5m\033[32mMemcached successfully installed.\033[0m"||echo  "\033[5m\033[31mMemcached installation failed.\033[0m"
+echo "=========================================================="
+echo "Check the LNMPV status."
+echo "=========================================================="
+phpfpmrun=$(ps aux|grep "php-fpm"|grep -v "grep"|head -1)
+mysqlrun=$(ps aux|grep "mysql"|grep -v "grep"|head -1)
+nginxrun=$(ps aux|grep "nginx"|grep -v "grep"|head -1)
+varnishrun=$(ps aux|grep "varnish"|grep -v "grep"|head -1)
+memcachedrun=$(ps aux|grep "memcached"|grep -v "grep"|head -1)
+echo "Check PHP-FPM Status"
+if [ "$phpfpmrun" = "" ];then
+        echo  "\033[5m\033[31mPHP-FPM failed to start.\033[0m"
+        error=1
+else
+        echo  "\033[5m\033[32mPHP-FPM successfully started.\033[0m"
+fi
+echo "Check MySQL Status"
+if [ "$mysqlrun" = "" ];then
+        echo  "\033[5m\033[31mMySQL failed to start.\033[0m"
+        error=1
+else
+        echo  "\033[5m\033[32mMySQL successfully started.\033[0m"
+fi
+echo "Check Nginx Status"
+if [ "$nginxrun" = "" ];then
+        echo  "\033[5m\033[31mNginx failed to start.\033[0m"
+        error=1
+else
+        echo  "\033[5m\033[32mNginx successfully started.\033[0m"
+fi
+echo "Check Varnish Status"
+if [ "$varnishrun" = "" ];then
+        echo  "\033[5m\033[31mVarnish failed to start.\033[0m"
+        error=1
+else
+        echo  "\033[5m\033[32mVarnish successfully started.\033[0m"
+fi
+echo "Check Memcached Status"
+if [ "$memcachedrun" = "" ];then
+        echo  "\033[5m\033[31mMemcached failed to start.\033[0m"
+        error=1
+else
+        echo  "\033[5m\033[32mMemcached successfully started.\033[0m"
+fi
+if [ "$error" = "1" ];then
+        echo "\033[46;30mThere are some errors when installed LNMPV,please sent the log files to e@yzs.me.\033[0m"
+else
+        echo "\033[46;30mLNMPV successfully installed and successfully started.\033[0m"
+	echo "You can visit http:///yourserverip:8910/tz.php"
+	echo "phpMyAdmin:http://yourserverip:8910/phpmyadmin/"
+	echo "Made by Extreme"
+	echo "My Blog:http://yzs.me/"
+	echo "For more information please visit http://www.mke2fs.com"
+fi

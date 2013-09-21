@@ -1,0 +1,63 @@
+useradd -rs /sbin/nologin php-fpm
+sed -i "s#\$server_port#80#g" /etc/nginx/fastcgi_params
+cat >/etc/nginx/sites-available/000-manager.conf<<EOF
+server {
+        listen   8910; ## listen for ipv4; this line is default and implied
+        listen   [::]:8910 default ipv6only=on; ## listen for ipv6
+
+        root /var/www;
+        index index.html index.htm index.php;
+
+        # Make site accessible for manager
+        server_name localhost;
+        access_log             /var/log/nginx/manager.log              main;
+        location / {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to index.html
+                try_files \$uri \$uri/ /index.html;
+                # Uncomment to enable naxsi on this location
+                #include /etc/nginx/naxsi.rules;
+        }
+
+        # Only for nginx-naxsi : process denied requests
+        #location /RequestDenied {
+                # For example, return an error code
+                #return 418;
+        #}
+
+#       error_page 404 /404.html;
+
+        # redirect server error pages to the static page /50x.html
+        #
+        #error_page 500 502 503 504 /50x.html;
+        #location = /50x.html {
+        #       root /usr/share/nginx/www;
+        #}
+
+        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+        #
+        location ~ \.php$ {
+                fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        #       # NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
+        #
+        #       # With php5-cgi alone:
+        #       fastcgi_pass 127.0.0.1:9000;
+        #       # With php5-fpm:
+                fastcgi_pass unix:/var/run/php5-fpm.sock;
+                fastcgi_index index.php;
+                include fastcgi_params;
+        }
+
+        # deny access to .htaccess files, if Apache's document root
+        # concurs with nginx's one
+        #
+        location ~ /\.ht {
+                deny all;
+        }
+}
+EOF
+
+wget http://jaist.dl.sourceforge.net/project/phpmyadmin/phpMyAdmin/4.0.5/phpMyAdmin-4.0.5-all-languages.zip -O /var/www/phpmyadmin.zip
+unzip /var/www/phpmyadmin.zip -d /var/www/
+mv /var/www/phpMyAdmin-4.0.5-all-languages /var/www/phpmyadmin
+rm -rf /var/www/phpmyadmin.zip

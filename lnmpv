@@ -1,0 +1,100 @@
+#!/bin/bash
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
+export PATH
+
+# Check if user is root
+if [ $(id -u) != "0" ]; then
+    printf "Error: You must be root to run this script!\n"
+    exit 1
+fi
+
+printf "=========================================================================\n"
+printf "Manager for LNMPV \n"
+printf "=========================================================================\n"
+printf "\n"
+printf "Usage: /root/lnmpv {start|stop|reload|restart|kill}\n"
+printf "=========================================================================\n"
+
+
+function_start()
+{
+    printf "Starting LNMPV...\n"
+        service nginx start
+    printf "Nginx start successfully!\n"
+        /etc/init.d/mysql* restart
+    printf "MySQL start successfully!\n"
+        service varnish start
+    printf "Varnish start successfully!\n"
+        /etc/init.d/php*-fpm start
+    printf "PHP-FPM start successfully!\n"
+}
+
+function_stop()
+{
+    printf "Starting LNMPV...\n"
+        service nginx stop
+    printf "Nginx stop successfully!\n"
+        /etc/init.d/mysql* stop
+    printf "MySQL stop successfully!\n"
+        service varnish stop
+    printf "Varnish stop successfully!\n"
+        /etc/init.d/php*-fpm stop
+    printf "PHP-FPM stop successfully!\n"
+}
+
+function_reload()
+{
+    printf "Reload LNMPV...\n"
+        service nginx reload
+    printf "Nginx Reload successfully!\n"
+        /etc/init.d/mysql* restart
+    printf "MySQL Restart successfully!\n"
+        service varnish restart
+    printf "Varnish Restart successfully!\n"
+        /etc/init.d/php*-fpm reload
+    printf "PHP-FPM Reload successfully!\n"
+}
+
+function_restart()
+{
+    printf "Restarting LNMPV...\n"
+        service nginx restart
+    printf "Nginx restart successfully!\n"
+        /etc/init.d/mysql* restart
+    printf "MySQL restart successfully!\n"
+        service varnish restart
+    printf "Varnish restart successfully!\n"
+        /etc/init.d/php*-fpm restart
+    printf "PHP-FPM restart successfully!\n"
+
+}
+
+function_kill()
+{
+    pkill nginx
+    pkill mysql*
+    pkill varnishd
+    pkill php-fpm
+}
+
+case "$1" in
+	start)
+		function_start
+		;;
+	stop)
+		function_stop
+		;;
+	restart)
+		function_restart
+		;;
+	reload)
+		function_reload
+		;;
+	kill)
+		function_kill
+		;;
+	*)
+		printf "Usage: lnmpv {start|stop|reload|restart|kill}\n"
+esac
+exit
+
