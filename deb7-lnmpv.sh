@@ -34,7 +34,8 @@ apt-get -y install debian-keyring debian-archive-keyring
 rm -rf /etc/apt/sources.list.d/dotdeb.list
 echo "deb http://packages.dotdeb.org wheezy all" >> /etc/apt/sources.list.d/dotdeb.list
 echo "deb-src http://packages.dotdeb.org wheezy all" >> /etc/apt/sources.list.d/dotdeb.list
-apt-key add ~/lnmpv/packages/dotdeb.gpg
+wget http://www.dotdeb.org/dotdeb.gpg
+apt-key add dotdeb.gpg
 rm -rf /etc/apt/sources.list.d/backports.list
 echo "deb http://backports.debian.org/debian-backports squeeze-backports main" >> /etc/apt/sources.list.d/backports.list
 apt-get -y update
