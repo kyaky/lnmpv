@@ -48,8 +48,8 @@ yum -y install php-fpm php-mbstring php-pear php-devel php-mysql php-pecl-apc ph
 listen=$(cat /etc/php-fpm.d/www.conf|grep 127.0.0.1:9000)
 sed -i "s/$listen/listen = \/var\/run\/php5-fpm.sock/g" /etc/php-fpm.d/www.conf
 useradd -s /bin/sh -d /var/www www-data
-#wget http://soft.yzs.me/nginx-ctos.sh -O ~/nginx-ctos.sh
-#sh ~/nginx-ctos.sh
+
+cd ~/scripts/
 sh nginx-ctos.sh
 mkdir /etc/nginx/fastcgi_cache -p
 mkdir /etc/nginx/rewrite -p
@@ -61,9 +61,9 @@ touch /var/log/nginx/manager.log
 sh $installdir/addmanager
 sed -i "/SCRIPT_FILENAME/a\
 fastcgi_param   PHP_VALUE               \"open_basedir=\$document_root:/proc/:/tmp/\";" /etc/nginx/fastcgi_params
-wget http://jaist.dl.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz -O ~/libmcrypt-2.5.8.tar.gz
-tar zxvf ~/libmcrypt-2.5.8.tar.gz -C ~/
-cd ~/libmcrypt-2.5.8/
+cd ~/packages/
+tar zxvf libmcrypt-2.5.8.tar.gz
+cd llibmcrypt-2.5.8
 ./configure
 make
 make install
@@ -71,19 +71,16 @@ ln -sf /usr/local/lib/libmcrypt.so.4 /lib64/libmcrypt.so.4
 ln -sf /usr/local/lib/libmcrypt.so.4.4.8 /lib/libmcrypt.so.4
 bit=$(getconf LONG_BIT)
 if [ "$bit" == '64' ]; then
-#wget http://soft.yzs.me/php-mcrypt-5.3.3-1.el6.x86_64.rpm -O ~/php-mcrypt-5.3.3-1.el6.x86_64.rpm
-#rpm -ivh ~/php-mcrypt-5.3.3-1.el6.x86_64.rpm --nodeps
+cd ~/packages/
 rpm -ivh php-mcrypt-5.3.3-1.el6.x86_64.rpm --nodeps
 fi
 if [ "$bit" == '32' ]; then
-#wget http://soft.yzs.me/php-mcrypt-5.3.3-1.el6.i686.rpm -O ~/php-mcrypt-5.3.3-1.el6.i686.rpm
-#rpm -ivh ~/php-mcrypt-5.3.3-1.el6.i686.rpm --nodeps
+cd ~/packages/
 rpm -ivh php-mcrypt-5.3.3-1.el6.i686.rpm --nodeps
 fi
 cd /var/www
-wget http://www.yahei.net/tz/tz.zip
 yum -y install zip
-unzip tz.zip
+unzip ~/packages/tz.zip
 sed -i 's/listen       80;/listen       127.0.0.1:888;/g' /etc/nginx/nginx.conf
 mv /etc/varnish/default.vcl /etc/varnish/default.vcl.bak
 cd $installdir

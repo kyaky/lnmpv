@@ -35,8 +35,7 @@ apt-get -y install mysql-server
 apt-get -y install php5-fpm php-pear php5-dev php5-mysql php-apc php5-mcrypt php5-curl php5-memcache memcached varnish php5-gd
 listen=$(cat /etc/php5/fpm/pool.d/www.conf|grep 127.0.0.1:9000)
 sed -i "s/$listen/listen = \/var\/run\/php5-fpm.sock/g" /etc/php5/fpm/pool.d/www.conf
-#wget http://soft.yzs.me/nginx.sh -O ~/nginx.sh
-#sh ~/nginx.sh
+cd ~/scripts/
 sh nginx.sh
 mkdir /etc/nginx/fastcgi_cache -p
 mkdir /etc/nginx/rewrite -p
@@ -47,9 +46,8 @@ sh $installdir/addmanager
 sed -i "/SCRIPT_FILENAME/a\
 fastcgi_param   PHP_VALUE               \"open_basedir=\$document_root:/proc/:/tmp/\";" /etc/nginx/fastcgi_params
 cd /var/www
-wget http://www.yahei.net/tz/tz.zip
 apt-get -y install zip
-unzip tz.zip
+unzip ~/packages/tz.zip
 sed -i 's/listen       80;/listen       127.0.0.1:888;/g' /etc/nginx/nginx.conf
 mv /etc/varnish/default.vcl /etc/varnish/default.vcl.bak
 cd $installdir
