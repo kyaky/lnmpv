@@ -23,10 +23,10 @@ cd ~/lnmpv/packages/
 tar zxvf nginx-1.4.2.tar.gz
 cd nginx-1.4.2
 
-cp ~/lnmpv/packages/ngx_http_substitutions_filter_module.zip .
-cp ~/lnmpv/packages/ngx_devel_kit.zip .
-cp ~/lnmpv/packages/lua-nginx-module.zip .
-cp ~/lnmpv/packages/limit_req2_nginx_module.zip .
+cp ~/lnmpv/packages/ngx_http_substitutions_filter_module-master.zip ./ngx_http_substitutions_filter_module.zip
+cp ~/lnmpv/packages/ngx_devel_kit-master.zip ./ngx_devel_kit.zip
+cp ~/lnmpv/packages/lua-nginx-module-master.zip ./lua-nginx-module.zip
+cp ~/lnmpv/packages/limit_req2_nginx_module-master.zip ./limit_req2_nginx_module.zip
 
 unzip ngx_http_substitutions_filter_module.zip
 unzip ngx_devel_kit.zip
