@@ -1,7 +1,7 @@
 apt-get install zip unzip libxslt1-dev libxml2-dev libpcre3-dev libjpeg62-dev autoconf libxml2-dev libcurl4-openssl-dev openssl libpng12-dev libmcrypt-dev curl gcc g++ make libssl-dev libgeoip-dev -y
 apt-get install make libssl-dev libpcre3-dev libxml2-dev libxslt1-dev libxml2-dev libgd2-xpm libgd2-xpm-dev -y
 cd ~
-cd ~/packages/
+cd ~/lnmpv/packages/
 tar zxvf LuaJIT-2.0.1.tar.gz
 rm -rf LuaJIT-2.0.1.tar.gz
 cd LuaJIT-2.0.1
@@ -10,7 +10,7 @@ make install
 ln -sf luajit-2.0.0-beta10 /usr/local/bin/luajit
 ln -sf /usr/local/lib/libluajit-5.1.so.2 /usr/lib/
 cd ~
-cd ~/packages/
+cd ~/lnmpv/packages/
 tar zxvf GeoIP-latest.tar.gz
 rm -rf GeoIP-latest.tar.gz
 cd GeoIP*
@@ -19,10 +19,10 @@ make
 make install
 ln -s /usr/local/lib/libGeoIP.so.1 /lib
 cd ~
-cd ~/packages/
+cd ~/lnmpv/packages/
 tar zxvf nginx-1.4.2.tar.gz
 cd nginx-1.4.2
-cd ~/packages/
+cd ~/lnmpv/packages/
 unzip ngx_http_substitutions_filter_module.zip
 unzip ngx_devel_kit.zip
 unzip lua-nginx-module.zip
@@ -33,12 +33,12 @@ make
 make install
 mkdir /var/lib/nginx/body -p
 ln -sf /usr/share/nginx/sbin/nginx /usr/sbin/nginx
-cp -f ~/addons/nginx-lnmpv.conf /etc/nginx/nginx.conf
+cp -f ~/lnmpv/addons/nginx-lnmpv.conf /etc/nginx/nginx.conf
 mkdir /etc/nginx/sites-available
 mkdir /tmp/nginx/cache/path -p
 chown -R www-data:www-data /tmp/nginx/
 sed -i '1i\mkdir /tmp/nginx/cache/path -p;chown -R www-data:www-data /tmp/nginx/;service nginx restart' /etc/rc.local
-cp -f ~/addons/fastcgi_params /etc/nginx/fastcgi_params
-cp -f ~/addons/nginx /etc/init.d/nginx
+cp -f ~/lnmpv/addons/fastcgi_params /etc/nginx/fastcgi_params
+cp -f ~/lnmpv/addons/nginx /etc/init.d/nginx
 chmod 755 /etc/init.d/nginx
 ln -sf /etc/init.d/nginx /etc/rc3.d/S85nginx

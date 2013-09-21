@@ -49,7 +49,7 @@ listen=$(cat /etc/php-fpm.d/www.conf|grep 127.0.0.1:9000)
 sed -i "s/$listen/listen = \/var\/run\/php5-fpm.sock/g" /etc/php-fpm.d/www.conf
 useradd -s /bin/sh -d /var/www www-data
 
-cd ~/scripts/
+cd ~/lnmpv/scripts/
 sh nginx-ctos.sh
 mkdir /etc/nginx/fastcgi_cache -p
 mkdir /etc/nginx/rewrite -p
@@ -61,7 +61,7 @@ touch /var/log/nginx/manager.log
 sh $installdir/addmanager
 sed -i "/SCRIPT_FILENAME/a\
 fastcgi_param   PHP_VALUE               \"open_basedir=\$document_root:/proc/:/tmp/\";" /etc/nginx/fastcgi_params
-cd ~/packages/
+cd ~/lnmpv/packages/
 tar zxvf libmcrypt-2.5.8.tar.gz
 cd llibmcrypt-2.5.8
 ./configure
@@ -71,16 +71,16 @@ ln -sf /usr/local/lib/libmcrypt.so.4 /lib64/libmcrypt.so.4
 ln -sf /usr/local/lib/libmcrypt.so.4.4.8 /lib/libmcrypt.so.4
 bit=$(getconf LONG_BIT)
 if [ "$bit" == '64' ]; then
-cd ~/packages/
+cd ~/lnmpv/packages/
 rpm -ivh php-mcrypt-5.3.3-1.el6.x86_64.rpm --nodeps
 fi
 if [ "$bit" == '32' ]; then
-cd ~/packages/
+cd ~/lnmpv/packages/
 rpm -ivh php-mcrypt-5.3.3-1.el6.i686.rpm --nodeps
 fi
 cd /var/www
 yum -y install zip
-unzip ~/packages/tz.zip
+unzip ~/lnmpv/packages/tz.zip
 sed -i 's/listen       80;/listen       127.0.0.1:888;/g' /etc/nginx/nginx.conf
 mv /etc/varnish/default.vcl /etc/varnish/default.vcl.bak
 cd $installdir

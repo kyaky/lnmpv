@@ -1,6 +1,6 @@
 yum -y install gd-devel glib2-devel openssl-devel pcre-devel bzip2-devel gzip-devel unzip make gcc gcc-c++ wget openssl libcurl-devel gd zlib-devel zip libcap-devel libssl.so.6 libxml2-devel libjpeg-devel libpng-devel autoconf libpng-devel libpng10 libpng10-devel libmcrypt libmcrypt-devel mcrypt mhash libxslt-devel make --skip-broken
 cd ~
-cd ~/packages/
+cd ~/lnmpv/packages/
 tar zxvf LuaJIT-2.0.1.tar.gz
 rm -rf LuaJIT-2.0.1.tar.gz
 cd LuaJIT-2.0.1
@@ -9,7 +9,7 @@ make install
 ln -sf luajit-2.0.0-beta10 /usr/local/bin/luajit
 ln -sf /usr/local/lib/libluajit-5.1.so.2 /usr/lib/
 ln -sf /usr/local/lib/libluajit-5.1.so.2 /lib64
-cd ~/packages/
+cd ~/lnmpv/packages/
 tar zxvf GeoIP-latest.tar.gz
 rm -rf GeoIP-latest.tar.gz
 cd GeoIP*
@@ -18,10 +18,10 @@ make
 make install
 ln -sf /usr/local/lib/libGeoIP.so.1 /lib
 ln -sf /usr/local/lib/libGeoIP.so.1 /lib64
-cd ~/packages/
+cd ~/lnmpv/packages/
 tar zxvf nginx-1.4.2.tar.gz
 cd nginx-1.4.2
-cd ~/packages/
+cd ~/lnmpv/packages/
 unzip ngx_http_substitutions_filter_module.zip
 unzip ngx_devel_kit.zip
 unzip lua-nginx-module.zip
@@ -32,12 +32,12 @@ make
 make install
 mkdir /var/lib/nginx/body -p
 ln -sf /usr/share/nginx/sbin/nginx /usr/sbin/nginx
-cp -f ~/addons/nginx-lnmpv.conf /etc/nginx/nginx.conf
+cp -f ~/lnmpv/addons/nginx-lnmpv.conf /etc/nginx/nginx.conf
 mkdir /etc/nginx/sites-available
 mkdir /tmp/nginx/cache/path -p
 chown -R www-data:www-data /tmp/nginx/cache/path
 sed -i '1i\mkdir /tmp/nginx/cache/path -p;chown -R www-data:www-data /tmp/nginx/;service nginx restart' /etc/rc.local
-cp -f ~/addons/fastcgi_params /etc/nginx/fastcgi_params
-cp -f ~/addons/nginx-ctos /etc/init.d/nginx
+cp -f ~/lnmpv/addons/fastcgi_params /etc/nginx/fastcgi_params
+cp -f ~/lnmpv/addons/nginx-ctos /etc/init.d/nginx
 chmod 755 /etc/init.d/nginx
 ln -sf /etc/init.d/nginx /etc/rc3.d/S85nginx
